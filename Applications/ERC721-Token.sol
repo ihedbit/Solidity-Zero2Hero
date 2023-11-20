@@ -7,17 +7,20 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
 
-contract DMind is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, Ownable, ERC721Burnable {
+contract DMindCollection is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, Ownable, ERC721Burnable, EIP712, ERC721Votes {
     uint256 private _nextTokenId;
 
     constructor(address initialOwner)
-        ERC721("DMind", "DMC")
+        ERC721("DMind Collection", "itsDMind")
         Ownable(initialOwner)
+        EIP712("DMind Collection", "1")
     {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "https://dmind.me/";
+        return "https://dmind.me@proton.me";
     }
 
     function pause() public onlyOwner {
@@ -38,7 +41,7 @@ contract DMind is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, Ow
 
     function _update(address to, uint256 tokenId, address auth)
         internal
-        override(ERC721, ERC721Enumerable, ERC721Pausable)
+        override(ERC721, ERC721Enumerable, ERC721Pausable, ERC721Votes)
         returns (address)
     {
         return super._update(to, tokenId, auth);
@@ -46,7 +49,7 @@ contract DMind is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, Ow
 
     function _increaseBalance(address account, uint128 value)
         internal
-        override(ERC721, ERC721Enumerable)
+        override(ERC721, ERC721Enumerable, ERC721Votes)
     {
         super._increaseBalance(account, value);
     }
