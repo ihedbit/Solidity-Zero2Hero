@@ -54,6 +54,7 @@ This smart contract allows multiple owners to collectively manage a wallet. Tran
 ### Receive Function
 
 - External payable function to receive Ether, emitting a `Deposit` event.
+- It enables contract to receive Ether.
 
 ### Submit Transaction Function (`submitTransaction`)
 
