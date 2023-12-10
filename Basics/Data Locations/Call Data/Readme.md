@@ -91,3 +91,6 @@ contract AllAboutCalldata {
 This code provides a clear example of the differences in manipulating data between memory and calldata in Solidity. It emphasizes the read-only nature of calldata and the freedom to modify data in memory.
 
 In the provided Solidity code snippet, attempting to modify `calldataParameter` will result in a compiler error, highlighting the read-only nature of calldata. This restriction ensures the integrity of data passed through calldata during function execution.
+
+## References
+[solidity-tutorial-all-about-calldata](https://betterprogramming.pub/solidity-tutorial-all-about-calldata-aebbe998a5fc)
