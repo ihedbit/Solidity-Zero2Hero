@@ -61,3 +61,6 @@ In Ethereum smart contracts, understanding data locations is crucial not only fo
    - Examples include assignments to state variables or members of local variables of storage struct type, even if the local variable itself is just a reference.
 
 Understanding these assignment semantics is essential for ensuring the expected behavior of smart contracts. **Developers need to be mindful of when independent copies or references are created, especially when dealing with storage, memory, and calldata interactions. This knowledge helps in designing contracts that efficiently manage data and operate according to the intended logic.**
+
+## References
+[Data Representation in Solidity](https://ethdebug.github.io/solidity-data-representation/)
