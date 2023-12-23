@@ -324,6 +324,16 @@ Embark on your journey from Solidity Zero to Hero today! Let's build the decentr
 
 Happy coding!
 
+## Colabration Terms
+
+  - contact  [@Hooman (DMind) Dehghani](https://www.github.com/itsDMind) to get access.
+
+      - [communication](https://www.itsdmind.github.io)
+
+  - Select one of the categories.
+  
+  - Start & Explore & Move on. 
+
 ## Authors
 - [@Hooman (DMind) Dehghani](https://www.github.com/itsDMind)
 
