@@ -54,3 +54,64 @@ function qux(bool d) external;
 Each of these functions will have a unique function selector based on its complete signature. Solidity will use these selectors to correctly route incoming transactions to the corresponding functions.
 
 In summary, Solidity utilizes function selectors, generated from the function signatures, to manage the identification of functions, even when there are more than 4 functions in a contract. The entire signature, including parameter types, ensures unique function selectors and proper function dispatching within the EVM.
+
+# 3. If a delegatecall is made to a contract that makes a delegatecall to another contract, who is msg.sender in the proxy, the first contract, and the second contract?
+In Solidity, the `msg.sender` refers to the address of the account or contract that is currently executing the function. When using delegatecall in a proxy contract, the `msg.sender` can change as the call is forwarded to other contracts.
+
+### Proxy Contract:
+
+```solidity
+contract Proxy {
+    address public owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function delegateCallToContract(address _target, bytes memory _data) public {
+        (bool success, ) = _target.delegatecall(_data);
+        require(success, "Delegate call failed");
+    }
+}
+```
+
+In this example, the `Proxy` contract has a `delegateCallToContract` function that performs a delegatecall to the target contract.
+
+### First Contract:
+
+```solidity
+contract FirstContract {
+    address public firstContractOwner;
+
+    constructor() {
+        firstContractOwner = msg.sender;
+    }
+
+    // Additional functions of the first contract...
+}
+```
+
+When the delegatecall is made from the proxy to the first contract, `msg.sender` in the first contract will be the address of the proxy contract.
+
+### Second Contract:
+
+```solidity
+contract SecondContract {
+    address public secondContractOwner;
+
+    constructor() {
+        secondContractOwner = msg.sender;
+    }
+
+    // Additional functions of the second contract...
+}
+```
+
+Similarly, when the delegatecall is made from the first contract to the second contract, `msg.sender` in the second contract will be the address of the first contract.
+
+So, in summary:
+
+- `msg.sender` in the proxy contract will be the address that initiated the delegatecall to the proxy.
+- `msg.sender` in the first contract will be the address of the proxy contract.
+- `msg.sender` in the second contract will be the address of the first contract.
+

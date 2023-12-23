@@ -65,3 +65,13 @@ To mitigate ERC20 approval frontrunning attacks, users and developers can consid
 
 Understanding and implementing these strategies can enhance the security of ERC20 token approvals and protect users from frontrunning attacks.
 
+# 3. What opcode accomplishes address(this).balance?
+The opcode that accomplishes `address(this).balance` in Solidity is:
+
+```solidity
+BALANCE
+```
+This opcode returns the balance of the current contract in Wei.
+
+#### Note: In Solidity, the `address(this).balance` expression retrieves the balance of the current contract. It is equivalent to the `SELFBALANCE` opcode, which explicitly accesses the balance of the current contract instance. The `SELFBALANCE` opcode has a lower gas cost than the `BALANCE` opcode, which can be useful for performance-sensitive applications.
+
