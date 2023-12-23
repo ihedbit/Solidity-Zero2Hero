@@ -1,6 +1,6 @@
 # Solidity Easy Questions Answers
 
-1. What is the difference between private, internal, public, and external functions?
+# 1. What is the difference between private, internal, public, and external functions?
 
 In Solidity, functions can have different visibility levels, which determine how they can be accessed and by whom. Here's an overview of the main visibility specifiers:
 
@@ -25,3 +25,4 @@ In Solidity, functions can have different visibility levels, which determine how
    - **Use Case:** Ideal for functions that need to be called from outside the contract, often used in interaction with other contracts on the blockchain.
 
 In summary, the choice of visibility specifier depends on the intended use of the function and the desired level of access control. Private functions are for internal use only, internal functions are for within the contract and its derived contracts, public functions are accessible from anywhere, and external functions are specifically designed for external contract interactions.
+
