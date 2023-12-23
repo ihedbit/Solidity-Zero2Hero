@@ -87,3 +87,22 @@ address newContract = address(uint160(uint256(keccak256(abi.encodePacked(msg.sen
 
 By using `create2`, developers can have more control over the address where the contract will be deployed, which can be beneficial in certain decentralized applications and smart contract architectures.
 
+# 4. What major change with arithmetic happened with Solidity 0.8.0?
+
+Solidity 0.8.0 introduced a significant change in its handling of arithmetic operations. Previously, arithmetic operations were allowed to overflow or underflow, resulting in unexpected behavior. This could lead to security vulnerabilities or unexpected outcomes for users of smart contracts.
+
+To address this issue, Solidity 0.8.0 introduced a default behavior of **checking for overflow and underflow** in all arithmetic operations. This means that if an operation attempts to perform a calculation that would result in an overflow or underflow, the operation will **revert**, preventing the contract from executing further and potentially causing harm.
+
+This change was made to improve the safety and predictability of Solidity code. By explicitly checking for overflow and underflow, developers can be more confident that their code will behave as expected, even in the face of large numbers or complex arithmetic manipulations.
+
+To disable this default behavior and revert to the previous behavior of allowing overflow and underflow, developers can enclose the arithmetic operation within an **unchecked block**. The syntax for an unchecked block is as follows:
+
+```solidity
+unchecked {
+  // Arithmetic operation
+}
+```
+
+By using an unchecked block, developers can explicitly opt out of the overflow/underflow checks, allowing for the possibility of arithmetic errors. However, this should only be done with caution and understanding of the potential risks.
+
+The introduction of checked arithmetic in Solidity 0.8.0 is a significant step towards improving the safety and predictability of smart contracts. By defaulting to checking for overflow and underflow, developers can significantly reduce the risk of unintended consequences and potential vulnerabilities arising from arithmetic errors.
