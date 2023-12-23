@@ -58,8 +58,6 @@ In summary, Solidity utilizes function selectors, generated from the function si
 # 3. If a delegatecall is made to a contract that makes a delegatecall to another contract, who is msg.sender in the proxy, the first contract, and the second contract?
 In Solidity, the `msg.sender` refers to the address of the account or contract that is currently executing the function. When using delegatecall in a proxy contract, the `msg.sender` can change as the call is forwarded to other contracts.
 
-### Proxy Contract:
-
 ```solidity
 contract Proxy {
     address public owner;
@@ -68,18 +66,19 @@ contract Proxy {
         owner = msg.sender;
     }
 
-    function delegateCallToContract(address _target, bytes memory _data) public {
-        (bool success, ) = _target.delegatecall(_data);
-        require(success, "Delegate call failed");
+    function delegateCallToFirstContract(bytes memory _data) public {
+        address firstContract = address(new FirstContract());
+        (bool success, ) = firstContract.delegatecall(_data);
+        require(success, "Delegate call to FirstContract failed");
+    }
+
+    function delegateCallToSecondContract(bytes memory _data) public {
+        address secondContract = address(new SecondContract());
+        (bool success, ) = secondContract.delegatecall(_data);
+        require(success, "Delegate call to SecondContract failed");
     }
 }
-```
 
-In this example, the `Proxy` contract has a `delegateCallToContract` function that performs a delegatecall to the target contract.
-
-### First Contract:
-
-```solidity
 contract FirstContract {
     address public firstContractOwner;
 
@@ -87,15 +86,11 @@ contract FirstContract {
         firstContractOwner = msg.sender;
     }
 
-    // Additional functions of the first contract...
+    function getFirstContractOwner() public view returns (address) {
+        return firstContractOwner;
+    }
 }
-```
 
-When the delegatecall is made from the proxy to the first contract, `msg.sender` in the first contract will be the address of the proxy contract.
-
-### Second Contract:
-
-```solidity
 contract SecondContract {
     address public secondContractOwner;
 
@@ -103,15 +98,26 @@ contract SecondContract {
         secondContractOwner = msg.sender;
     }
 
-    // Additional functions of the second contract...
+    function getSecondContractOwner() public view returns (address) {
+        return secondContractOwner;
+    }
 }
+
 ```
+## More Explanation
+To observe the functionality, you can follow these steps:
 
-Similarly, when the delegatecall is made from the first contract to the second contract, `msg.sender` in the second contract will be the address of the first contract.
+1. **Deploy the Proxy Contract:**
+   Deploy the `Proxy` contract first. This will be the initial contract that performs delegatecalls to other contracts.
 
-So, in summary:
+2. **Deploy the First Contract:**
+   After deploying the `Proxy` contract, call the `delegateCallToFirstContract` function on the `Proxy` contract. This will create an instance of `FirstContract` and perform a delegatecall to it.
 
-- `msg.sender` in the proxy contract will be the address that initiated the delegatecall to the proxy.
-- `msg.sender` in the first contract will be the address of the proxy contract.
-- `msg.sender` in the second contract will be the address of the first contract.
+3. **Inspect State in First Contract:**
+   After the delegatecall to the `FirstContract`, you can inspect the state of `FirstContract` by calling the `getFirstContractOwner` function. It should return the address of the `Proxy` contract since `msg.sender` in `FirstContract` is set to the address of the caller, which is the `Proxy` contract.
 
+4. **Deploy the Second Contract:**
+   Similarly, you can call the `delegateCallToSecondContract` function on the `Proxy` contract. This will create an instance of `SecondContract` and perform a delegatecall to it.
+
+5. **Inspect State in Second Contract:**
+   After the delegatecall to the `SecondContract`, you can inspect the state of `SecondContract` by calling the `getSecondContractOwner` function. It should return the address of the `FirstContract` contract since `msg.sender` in `SecondContract` is set to the address of the caller, which is the `FirstContract` contract.
