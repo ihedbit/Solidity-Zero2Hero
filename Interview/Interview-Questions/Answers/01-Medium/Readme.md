@@ -34,3 +34,38 @@ While `transfer` and `send` are simple ways to transfer funds, they come with ce
    - It's essential to be aware of the gas limits associated with these functions, especially when dealing with more complex smart contract interactions.
 
 In summary, while `transfer` and `send` provide simple ways to transfer Ether, developers should be cautious of their limitations and potential vulnerabilities. Modern best practices often involve using the `address.call{value: amount}("")` pattern for more control over gas and avoiding reentrancy issues.
+
+# 2. How do you write a gas-efficient for loop in Solidity?
+
+In Solidity, writing gas-efficient code is crucial for optimizing the cost of transactions on the Ethereum blockchain. Here's an example of how you can write a gas-efficient for loop:
+
+```solidity
+// Gas-efficient for loop in Solidity
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract GasEfficientForLoop {
+    function gasEfficientLoop(uint256[] memory data) external pure returns (uint256) {
+        uint256 total = 0;
+
+        // Use a variable to store the length outside the loop
+        uint256 dataLength = data.length;
+
+        for (uint256 i = 0; i < dataLength; i++) {
+            // Access the array elements directly using the stored length
+            total += data[i];
+        }
+
+        return total;
+    }
+}
+```
+
+Explanation:
+
+1. **Variable for Length**: Storing the length of the array in a separate variable (`dataLength`) outside the loop prevents the Solidity compiler from repeatedly fetching the length in each iteration. This can save gas because it avoids redundant SLOAD operations.
+
+2. **Access Array Elements Directly**: Accessing array elements directly inside the loop is more gas-efficient than using a function call or accessing a mapping. In this example, we directly access `data[i]` to retrieve the array element.
+
+Using these gas-efficient techniques can help optimize your Solidity code and reduce the overall gas costs of your smart contracts.
