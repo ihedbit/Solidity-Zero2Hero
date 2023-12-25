@@ -106,3 +106,76 @@ unchecked {
 By using an unchecked block, developers can explicitly opt out of the overflow/underflow checks, allowing for the possibility of arithmetic errors. However, this should only be done with caution and understanding of the potential risks.
 
 The introduction of checked arithmetic in Solidity 0.8.0 is a significant step towards improving the safety and predictability of smart contracts. By defaulting to checking for overflow and underflow, developers can significantly reduce the risk of unintended consequences and potential vulnerabilities arising from arithmetic errors.
+
+# 5. What special CALL is required for proxies to work?
+To enable proxies to work effectively in Solidity, a specific type of `CALL` function is essential. Proxies are commonly used in smart contracts to upgrade contract logic without changing the contract's address. The `delegatecall` function is a crucial component for proxies to achieve this functionality.
+
+## Delegatecall Function
+
+The `delegatecall` function is a low-level operation in Solidity that allows a contract to execute code from another contract while preserving the calling contract's storage and context. This is particularly useful for proxy contracts, as it enables them to delegate the execution of functions to an implementation contract without changing the proxy's address.
+
+Here is the basic syntax for a `delegatecall`:
+
+```solidity
+(bool success, bytes memory returnData) = targetContract.delegatecall(
+    abi.encodeWithSignature("functionName(uint256)", argumentValue)
+);
+```
+
+- `targetContract`: The contract address to which the call is delegated.
+- `functionName`: The name of the function to be executed in the `targetContract`.
+- `argumentValue`: The value to be passed as an argument to the function.
+
+The `delegatecall` function returns a boolean indicating whether the call was successful (`success`) and the data returned by the called function (`returnData`).
+
+## Example Usage
+
+Consider a proxy contract with an upgradeable logic contract:
+
+```solidity
+contract Proxy {
+    address public logicContract;
+
+    function upgradeLogic(address _newLogic) external {
+        logicContract = _newLogic;
+    }
+
+    function forwardFunction(uint256 _value) external returns (uint256) {
+        (bool success, bytes memory returnData) = logicContract.delegatecall(
+            abi.encodeWithSignature("functionName(uint256)", _value)
+        );
+
+        require(success, "Delegatecall failed");
+
+        // Process returnData if needed
+
+        return _value; // Return value or other processed data
+    }
+}
+```
+
+In this example, the `forwardFunction` in the proxy contract delegates the execution to the `functionName` in the `logicContract` using `delegatecall`. This allows for seamless upgrades of the contract logic without changing the proxy's address.
+
+Remember to handle return values and errors appropriately when using `delegatecall` in your contracts.
+
+## The Role of `DELEGATECALL` in Proxy Contracts
+
+In the realm of Solidity smart contracts, proxies play a crucial role in enabling upgradeability, a feature that allows contracts to seamlessly transition from one implementation to another without disrupting existing user interactions. To achieve this seamless upgrade mechanism, proxies utilize a special message call called `DELEGATECALL`.
+
+**Understanding `DELEGATECALL`**
+
+`DELEGATECALL` is a unique call instruction that distinguishes itself from basic call instructions in several aspects. Unlike a normal call, `DELEGATECALL` executes the target function in the context of the calling contract, retaining the calling contract's storage, state, and transaction properties like `msg.sender` and `msg.value`. This context-sensitive execution enables proxies to seamlessly forward function calls to their underlying implementation contracts without compromising the calling contract's state.
+
+**Why `DELEGATECALL` is Essential for Proxies**
+
+The use of `DELEGATECALL` is essential for proxies to function effectively for several reasons:
+
+1. **Maintaining State Integrity:** By executing the target function in the context of the calling contract, `DELEGATECALL` ensures that the calling contract's state remains unchanged, even if the underlying implementation contract modifies its own state. This preserves the integrity of the calling contract during the upgrade process.
+
+2. **Efficient Value Transfer:** `DELEGATECALL` can handle value transfers, enabling proxies to effectively forward ether payments to the appropriate implementation contract. This seamless transfer of value is crucial for maintaining payment functionality during upgrades.
+
+3. **Accessing Calling Contract's Storage:** Since `DELEGATECALL` executes in the context of the calling contract, it can access the calling contract's storage, allowing the implementation contract to retrieve or modify data stored in the calling contract. This capability is often used for shared data structures or cross-contract communication.
+
+4. **Maintaining Dependency Injection:** In proxy designs that utilize dependency injection, `DELEGATECALL` enables the proxy to inject the desired implementation contract into the calling contract's context, allowing the called function to access the specific implementation's functionality.
+
+In summary, `DELEGATECALL` plays a pivotal role in enabling proxies to achieve their primary function of facilitating seamless contract upgrades. Its ability to preserve state integrity, handle value transfers, access calling contract storage, and maintain dependency injection makes it an indispensable tool for proxy-based upgrade patterns in Solidity.

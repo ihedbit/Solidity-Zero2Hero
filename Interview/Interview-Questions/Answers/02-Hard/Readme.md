@@ -138,3 +138,46 @@ event InternalStateChange(
 ```
 
 This event is used to track internal state changes within a contract. The `stateValue1`, `stateValue2`, `stateValue3`, and `stateValue4` indexed arguments are used to store the new values of the contract's internal state variables.
+
+# 5. What is an anonymous Solidity event?
+In Solidity, an event is a way to log and notify external parties about specific occurrences within a smart contract. Events are crucial for interacting with decentralized applications (DApps) as they enable off-chain systems to react to on-chain events.
+
+## Definition of an Event
+
+An event in Solidity is typically declared using the `event` keyword. It serves as a signal that something significant has happened within the smart contract, and it allows external applications or scripts to listen for and react to these occurrences.
+
+```solidity
+event MyEvent(uint256 indexed param1, address indexed param2);
+```
+
+In the example above, `MyEvent` is an event with two parameters: a `uint256` named `param1` and an `address` named `param2`. The `indexed` keyword is used to make these parameters searchable.
+
+## Anonymous Event
+
+An anonymous event in Solidity is one where the event itself does not have a name. This means that the event cannot be directly referenced by name in the contract or external code. Instead, it is defined without a name and used implicitly.
+
+```solidity
+event (uint256 indexed param1, address indexed param2);
+```
+
+The absence of a name makes the event anonymous. Anonymous events are often used when the event itself is less critical, and the emphasis is on the data being emitted. They are particularly useful when you want to emit data without explicitly naming the event, which can be beneficial in scenarios where the event is temporary or has a limited purpose.
+
+## Example Usage
+
+Here's an example of how an anonymous event might be used in a function:
+
+```solidity
+function performAction() public {
+    // Some logic...
+
+    // Emitting an anonymous event
+    emit (value, msg.sender);
+
+    // More logic...
+}
+```
+
+In the example, the anonymous event is emitted with the specified parameters, and external systems can listen for these events even though the event itself does not have a name.
+
+In summary, anonymous events in Solidity provide a way to emit data without explicitly naming the event, making them suitable for scenarios where the event is temporary or less critical.
+```
