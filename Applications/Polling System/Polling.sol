@@ -1,29 +1,28 @@
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract PollingSystem {
+contract SimplePollingSystem {
     address public owner;
-    
+
     struct Poll {
         string question;
         string[] options;
         mapping(string => uint256) votes;
         bool isOpen;
     }
-    
+
     Poll[] public polls;
-    
+
     modifier onlyOwner() {
         require(msg.sender == owner, "Only the owner can call this function");
         _;
     }
-    
+
     modifier pollExists(uint256 pollId) {
         require(pollId < polls.length, "Poll does not exist");
         _;
     }
-    
+
     modifier pollOpen(uint256 pollId) {
         require(polls[pollId].isOpen, "Poll is closed");
         _;
@@ -31,17 +30,23 @@ contract PollingSystem {
 
     event PollCreated(uint256 indexed pollId, string question, string[] options);
     event Voted(uint256 indexed pollId, address indexed voter, string option);
+    event PollClosed(uint256 indexed pollId);
 
     constructor() {
         owner = msg.sender;
     }
 
     function createPoll(string memory _question, string[] memory _options) external onlyOwner {
-        polls.push(Poll({
-            question: _question,
-            options: _options,
-            isOpen: true
-        }));
+        polls.push();
+        Poll storage newPoll = polls[polls.length - 1];
+        newPoll.question = _question;
+        newPoll.options = _options;
+        newPoll.isOpen = true;
+
+        // Initialize the votes mapping for each option
+        for (uint256 i = 0; i < _options.length; i++) {
+            newPoll.votes[_options[i]] = 0;
+        }
 
         emit PollCreated(polls.length - 1, _question, _options);
     }
@@ -57,6 +62,7 @@ contract PollingSystem {
 
     function closePoll(uint256 pollId) external onlyOwner pollExists(pollId) pollOpen(pollId) {
         polls[pollId].isOpen = false;
+        emit PollClosed(pollId);
     }
 
     function getPoll(uint256 pollId) external view pollExists(pollId) returns (string memory question, string[] memory options, uint256[] memory voteCounts) {
@@ -82,3 +88,4 @@ contract PollingSystem {
         return false;
     }
 }
+
