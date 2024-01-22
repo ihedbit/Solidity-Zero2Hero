@@ -16,7 +16,6 @@ This Solidity smart contract implements a simple NFT marketplace where users can
 - Solidity Compiler ^0.8.0
 - Ethereum development environment (e.g., Remix, Truffle, or Hardhat)
 
-
 ## Usage
 
 1. Deploy the contract, specifying the initial listing fee.
