@@ -242,6 +242,7 @@ Welcome to Solidity Zero2Hero, your comprehensive guide to becoming a Solidity e
   - ERC 1155
   - ERC 4626
   - ERC 2981
+  - ERC 404
 
 ### DeFi
   - Uniswap V2 Swap
